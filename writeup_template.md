@@ -16,6 +16,7 @@ The goals / steps of this project are the following:
 [//]: # (Image References)
 [image1]: ./examples/car-hog.png
 [image2]: ./examples/notcar-hog.png
+[image21]: ./examples/boxes.png
 
 [image3]: ./examples/heatmap.png
 [video1]: ./project_video.mp4
@@ -74,13 +75,36 @@ I trained a linear SVM using simple defaults.
 
 #### 1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
 
-I have not performed any scaling, used the same scale across the whole image as SVM was pretty good with identifying even with just parts of the car in the image.
+I have performed any scaling by setting the image into 3 sections. With the overlap of 75% as default.
+I have used higher overlap(87%) for images that are farther, so that there is higher chance of finding the car.
 
+The values picked are:
+ystart = 350
+ystop = 450
+scale = 1
+cells_per_step=1
 
+ystart = 400
+ystop = 600
+scale = 1.5
+cells_per_step=2
+
+ystart = 550
+ystop = 700
+scale = 2
+cells_per_step=2
+
+ystart = 600
+ystop = 700
+scale = 3
+cells_per_step = 2
+
+I cam up with the above numbers by counting the boxes in the image with approximate numbers to fit the car in the image
+![alt text][image21]
 
 #### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
-Ultimately I searched on two scales using YCrCb 3-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result. Here are some example images:
+Ultimately I searched on 4 scales using YCrCb 3-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result. Here are some example images:
 
 ![alt text][image3]
 ---
@@ -116,6 +140,8 @@ Displayed above
 ### Discussion
 
 #### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
-
-Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
-
+The scale used is approx, it might fail on new roads, or roads that are steep or wide.
+The sliding window model is slow as newer models called YOLO are available now a days.
+The pipeline might not work in different wether and lighting conditions.
+Newer type cars, say Trucks, trams etc may not be detected properly if they are not part of the training data set.
+Do some kind of parallel threading to take advantage of all cpus in the system, current implementation uses only one thread at a time, resulting in very slow throughput.
